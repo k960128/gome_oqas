@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>第二环节·才思敏捷</title>
+    <link href="../static/favicon.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <style>
+        body {
+            font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+            background: #F8F8F8;
+        }
+
+        .layui-container {
+            width: 66%;
+        }
+
+        .layui-col-md3 {
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        h1 {
+            padding: 30px 0;
+            text-align: center;
+            color: #606266;
+        }
+
+        span {
+            font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-container" id="layui-container">
+    <div>
+        <h1 th:if="${thisLinks=='2'}">美财之星总决赛—第二环节·才思敏捷</h1>
+        <h1 th:if="${thisLinks=='3'}">美财之星总决赛—第三环节·场景再现</h1>
+        <h1 th:if="${thisLinks=='4'}">美财之星总决赛—第四环节·群英舌战</h1>
+        <h1 th:if="${thisLinks=='5'}">美财之星总决赛—第五环节·直抒胸臆</h1>
+        <span th:text="'当前'+${userSortnum}+'号选手正在选题！'"></span>
+    </div>
+
+    <div th:each="r:${list}" class="layui-col-md3">
+
+        <!---->
+        <button th:if="${disable=='否'}" th:onclick="a([[${r.thisNumber}]],[[${r.thisLinks}]]);" class="layui-btn">
+            <span th:text="${'第'+r.thisNumber+'套题'}"></span>
+        </button>
+        <button th:if="${disable=='是'}"
+                class="layui-btn layui-btn-disabled ">
+            <span th:text="${'第'+r.thisNumber+'套题'}"></span>
+        </button>
+
+    </div>
+</div>
+</body>
+<script src="../static/js/jquery-3.3.1.min.js"></script>
+<script src="../static/layui/layui.all.js"></script>
+<script>
+     var webSocketUrl = "ws://10.2.51.69:8088/websocket/[(${session.user.userName})]";
+    //var webSocketUrl = "ws://10.2.135.10:8088/websocket/[(${session.user.userName})]";
+    var socket = new WebSocket(webSocketUrl);
+    ;!function () {
+        var layer = layui.layer,
+            form = layui.form;
+        //连接到websocket
+
+
+        //获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+            if (msg.data !== "连接成功") {
+                // 解析JSON串
+                var data = JSON.parse(msg.data);
+                //接收报文，跳转至第二环节答题界面
+                if(data.message.thisNumber!=null && data.message.thisNumber!=undefined){
+                    if (data.message.thisLinks == '2' && data.toUserId == 'all') {
+
+                        //接收报文，其他参赛选手进入到当前参赛选手的选题页面
+                        $('#layui-container').hide("slow");
+                        window.location.href = "/answer?thisNumber=" + data.message.thisNumber + "&thisLinks=" + data.message.thisLinks + "&competitionOrder=" + data.message.competitionOrder;
+                    }
+                    if (data.message.thisLinks == '3' && data.toUserId == 'all') {
+                        //接收报文，跳转至第三环节答题界面
+                        $('#layui-container').hide("slow");
+                        window.location.href = "/answer?thisNumber=" + data.message.thisNumber + "&thisLinks=" + data.message.thisLinks + "&competitionOrder=" + data.message.competitionOrder;
+                    }
+                    if (data.message.thisLinks == '5' && data.toUserId == 'all') {
+                        //接收报文，跳转至第三环节答题界面
+                        $('#layui-container').hide("slow");
+                        window.location.href = "/answer?thisNumber=" + data.message.thisNumber + "&thisLinks=" + data.message.thisLinks + "&competitionOrder=" + data.message.competitionOrder;
+                    }
+                }
+
+            }
+
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("websocket已关闭");
+
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            console.log("websocket发生了错误");
+        }
+
+
+    }();
+
+    /**
+     * 选题事件
+     * @param thisNumber 当前题号
+     * @param thisLinks 当前环节
+     */
+    function a(thisNumber, thisLinks) {
+        //选题效果
+
+        console.log("我是酷酷的特效");
+        // 跳转连接 向所有端进行报文发送
+        socket.send('{"toUserId":"all","message":{"thisLinks":"' + thisLinks + '","thisNumber":"' + thisNumber + '","competitionOrder":"[(${session.user.competitionOrder})]"}}');
+        //延迟3秒进入连接
+
+        setTimeout(function () {
+            $('#layui-container').hide("2000");
+            window.location.href = "/answer?thisNumber=" + thisNumber + "&thisLinks=" + thisLinks + "&competitionOrder=[(${session.user.competitionOrder})]";
+        }, 3000);
+
+
+    }
+</script>
+</html>

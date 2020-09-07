@@ -1,0 +1,31 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /
+    session:
+      timeout: 300m
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://101.200.43.36:3306/gome_db?characterEncoding=utf-8
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+  mvc:
+    static-path-pattern: /static/**
+# mybatis 配置
+mybatis:
+  mapper-locations: mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    type-aliases-package: com.gome.pojo
+# 输出mybatis接口所在包下的日志信息
+logging:
+  level:
+    com.gome.mapper: debug
+#分页插件配置
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>第三环节·答题页面</title>
+    <link href="../static/favicon.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <style>
+        body {
+            font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+            background: #F8F8F8;
+        }
+
+        .layui-container {
+            width: 76%;
+        }
+
+        .layui-header {
+            color: #606266;
+            padding: 0 20px 20px;
+            border-bottom: 3px solid #009688;
+            line-height: 22px;
+            text-align: left;
+        }
+
+        h1 {
+            padding-top: 30px;
+            text-align: center;
+        }
+
+
+        .layui-row {
+            text-align: left;
+            width: 100%;
+            margin: 10px 0;
+            background: white;
+        }
+
+        .el-header {
+            padding: 18px 30px;
+            border-bottom: 1px solid #ebeef5;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        #test {
+            background: #A6A6A6;
+            text-align: center;
+            color: red;
+            font-size: 16px;
+            margin-top: 20px;
+            padding: 12px 0;
+            width: 30%;
+            float: right;
+        }
+    </style>
+</head>
+<body id="body">
+<div class="layui-container">
+    <div id="test">
+        <span id="test_showtimer"></span>
+    </div><!--剩余时间-->
+    <div class="layui-header">
+        <h1>第五届美财之星全国总决赛</h1>
+        <span th:text="'当前答题人：'+${gomeUser.userPersonsName}"></span>
+    </div>
+    <div>
+        <div th:each="r,i:${list}" class="layui-row">
+            <div class="el-header">
+                <span th:text="${r.questionTitle}"></span>
+                <span th:if="${gomeUser.competitionOrder} eq ${session.user.competitionOrder}" th:text="结束答题"
+                      th:onclick="close_msg()" class="layui-btn"></span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../static/js/jquery-3.3.1.min.js"></script>
+<script src="../static/layui/layui.all.js"></script>
+<script>
+
+    //连接到websocket
+    var webSocketUrl = "ws://10.2.51.69:8088/websocket/[(${session.user.userName})]";
+    //var webSocketUrl = "ws://10.2.135.10:8088/websocket/[(${session.user.userName})]";
+    var socket = new WebSocket(webSocketUrl);
+    $('#body').show("2000");
+    ;!function () {
+        var layer = layui.layer,
+            form = layui.form,
+            $ = layui.$,
+            util = layui.util;
+
+        //1. js获取当bai前时间
+        var date = new Date();
+        var min = date.getMinutes();
+        //3. 设置当前时间+5分钟：把zhi当前分钟数+5后的值重新设置为date对象的分钟数
+        date.setMinutes(min + 10);
+        // 设置开始时间和结束时间
+        var endTime = date.getTime();
+        var nowDate = new Date().getTime();
+
+        // 1.开始时间是当前时间，结束时间是数据库的时间*5分钟
+        util.countdown(endTime, nowDate, function (date, nowDate, timer) {
+            // 1. 如果加的五分钟小于当前时间
+            var str = date[2] + '分' + date[3] + '秒';
+            if (endTime > nowDate) {
+                $("#test_showtimer").attr("style", "color:red").html('倒计时：' + str);
+            } else if (endTime <= nowDate) {
+                $("#test_showtimer").hide("slow");
+
+                clearInterval(timer);
+
+                $("#test_showtimer").attr("style", "color:red").html('答题完毕！等待评委评分！');
+                $("#test_showtimer").show("slow");
+            }
+        });
+
+
+        //获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+            if (msg.data !== "连接成功") {
+                // 解析JSON串
+                var data = JSON.parse(msg.data);
+                //第三环节
+                if (data.message.thisLinks == 3 || data.message.thisLinks == 5) {
+                    if (data.toUserId == "all" && data.message.userSortnum != -1) {
+                        //表示手动结束演讲
+                        endTime = nowDate;
+                        $("#test_showtimer").hide("slow");
+                    }
+
+                    if (data.toUserId == "all" && data.message.userSortnum == -1) {
+                        //表示后端结束演讲开始评委倒计时1分钟答题时间
+                        //并重新开始倒计时
+                        $("#test_showtimer").hide("slow");
+                        date = new Date();
+                        min = date.getMinutes();
+                        date.setMinutes(min + 1);
+                        endTime = date.getTime();
+                        nowDate = new Date().getTime();
+
+                        util.countdown(endTime, nowDate, function (date, nowDate, timer) {
+                            // 1. 如果加的五分钟小于当前时间
+                            var str = date[2] + '分' + date[3] + '秒';
+                            $("#test_showtimer").show("slow");
+                            if (endTime > nowDate) {
+                                $("#test_showtimer").attr("style", "color:red").html('等待评委评分倒计时：' + str);
+                            } else if (endTime <= nowDate) {
+                                $("#test_showtimer").hide("slow");
+                                clearInterval(timer);
+                                $("#test_showtimer").attr("style", "color:red").html('打分结束！');
+                                $("#test_showtimer").show("slow");
+                            }
+                        });
+
+                    }
+                    if (data.toUserId == "all" && data.message.userSortnum == 99) {
+                        //进入得分界面
+                        console.log("进入得分界面");
+
+                        if(data.message.thisLinks=="3"){
+                            //如果是当前答题人
+                            if("[(${session.user.competitionOrder})]" == "[(${gomeUser.competitionOrder})]"){
+                                setTimeout(function(){
+                                    window.location.href = "/score?thisLinks=3&userSortnum=[(${gomeUser.competitionOrder})]";
+                                },3000);
+                            }else{
+                                setTimeout(function(){
+                                    window.location.href = "/score?thisLinks=3&userSortnum=[(${gomeUser.competitionOrder})]";
+                                },5000);
+                            }
+
+                        }
+                        if(data.message.thisLinks=="5"){
+                            if("[(${session.user.competitionOrder})]" == "[(${gomeUser.competitionOrder})]"){
+                                setTimeout(function(){
+                                    window.location.href = "/score?thisLinks=5&userSortnum=[(${gomeUser.competitionOrder})]";
+                                },3000);
+                            }else{
+                                setTimeout(function(){
+                                    window.location.href = "/score?thisLinks=5&userSortnum=[(${gomeUser.competitionOrder})]";
+                                },5000);
+                            }
+
+                        }
+
+
+
+                    }
+
+                }
+
+            }
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("websocket已关闭");
+
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            console.log("websocket发生了错误");
+        }
+
+
+    }();
+
+    //结束答题 由用户决定， 点击结束之后
+    //向后台发送一个报文，表示已经结束
+    function close_msg() {
+
+        socket.send('{"toUserId":"all","message":{"thisLinks":"[(${thisLinks})]","userSortnum":"[(${gomeUser.competitionOrder})]"}}');
+
+    }
+
+</script>
+</html>

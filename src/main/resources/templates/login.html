@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>登录页面</title>
+    <link href="../static/favicon.ico" rel="shortcut icon">
+    <link type="text/css" rel="stylesheet" href="../static/css/login.css">
+</head>
+<body>
+<div class="content">
+    <!--    登录    -->
+    <div class="form sign-in">
+        <form id="login-form" action="#" method="post" onsubmit="return false">
+            <h2>欢迎回来</h2>
+            <label>
+                <span>用户名</span>
+                <input class="input1" type="text" name="userName"/>
+            </label>
+            <label>
+                <span>密码</span>
+                <input class="input1" type="password" name="userPass"/>
+            </label>
+            <p class="forgot-pass"><a href="javascript:"></a></p>
+            <button type="button" class="submit" onclick="login()">登 录</button>
+        </form>
+    </div>
+    <div class="sub-cont">
+        <div class="img">
+            <div class="img__text m--up">
+                <h2>忘记密码了？</h2>
+                <p>点击下面按钮可以修改哦~</p>
+            </div>
+            <div class="img__text m--in">
+                <h2>已有帐号？</h2>
+                <p>有帐号就登录吧，好久不见了！</p>
+            </div>
+            <div class="img__btn">
+                <span class="m--up">忘记密码</span>
+                <span class="m--in">登 录</span>
+            </div>
+        </div>
+        <!--    注册    -->
+        <div class="form sign-up">
+            <form id="register-form" action="#" onsubmit="return false" method="post">
+                <h2>修改密码</h2>
+                <label>
+                    <span>用户名</span>
+                    <input class="input1" type="text" name="userName"/>
+                </label>
+                <label>
+                    <span>本人姓名</span>
+                    <input class="input1" type="text" name="userPersonsName"/>
+                </label>
+                <label>
+                    <span>新密码 </span>
+                    <input class="input1" type="password" name="userPass"/>
+                </label>
+                <label>
+                    <span>确认密码</span>
+                    <input class="input1" type="password" name="confirmPass"/>
+                </label>
+                <button type="button" class="submit" onclick="register()">找回密码</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../static/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="../static/js/login.js"></script>
+<script type="text/javascript">
+
+    function register() {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/update-user",
+            data: $('#register-form').serialize(),
+            success: function (result) {
+                if (result.status == 200) {
+                    alert(result.msg);
+                    $(':input', '#register-form')
+                        .not(':button, :submit, :reset, :hidden')
+                        .val('')
+                        .removeAttr('checked')
+                        .removeAttr('selected');
+                    window.location.href = "/";
+                } else {
+                    alert(result.msg);
+                }
+            }
+        });
+    }
+
+    function login() {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/login",
+            data: $('#login-form').serialize(),
+            success: function (result) {
+                if (result.status == 200) {
+                    //  /index url
+                    //  _self 当前页面刷新
+                    //to_socke();
+                    window.open('/index', '_self');
+                } else {
+                    alert(result.msg);
+                }
+            }
+        })
+    }
+
+
+</script>
+</body>
+</html>

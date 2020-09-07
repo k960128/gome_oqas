@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>得分界面</title>
+
+    <style type="text/css">
+        body {
+            background: url("../static/images/speech_bg.jpg") no-repeat center;
+            background-size: cover;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            -ms-background-size: cover;
+            overflow-y: hidden;
+            min-height: 1080px;
+            position: relative;
+        }
+
+        .box {
+            height: 120px;
+            position: absolute;
+            overflow: hidden;
+            top: 35%;
+            margin-top: -20px;
+            margin-left: -30px;
+            left: 50%;
+        }
+
+        .box span {
+            display: inline-block;
+            background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(#fef637), to(#f90));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            width: 100px;
+            height: 120px;
+            font-size: 120px;
+            line-height: 120px;
+        }
+
+        .box .sign-box span {
+            width: 60px;
+        }
+
+        .box .digit-container {
+            width: 100px;
+            text-align: center;
+            overflow: hidden;
+            font-size: 0;
+        }
+
+        .l {
+            float: left;
+        }
+        .title_content{
+            margin:0 auto;
+            width: 80%;
+            margin-top: 10%;
+        }
+        .title_content span{
+            display: block;
+            text-align: center;
+            font-size: 50px;
+        }
+
+        .Sort_First{
+            font-size:40px;
+            color:#FF9900;
+            font-weight: bold;
+        }
+        table tr:nth-child(2){
+            color: darkred;
+            height: 70px;
+        }
+        table tr:nth-child(3){
+            color: #FF9900;
+        }
+        table tr:nth-child(4){
+            color: #FEF637;
+        }
+        table tr{
+            font-weight: bold;
+            font-size:35px;
+            height: 45px;
+        }
+    </style>
+
+</head>
+<body>
+<div class="title_content" id="title_content">
+    <span th:if="${thisLinks eq '2'}" th:text="第一环节和第二环节得分"></span>
+    <span th:if="${thisLinks eq '3'}" th:text="第三环节-场景再现得分"></span>
+    <span th:if="${thisLinks eq '4'}" th:text="第四环节-群英舌战得分"></span>
+    <span th:text="${user.userPersonsName}"></span>
+</div>
+<div class="sort_content">
+    <table style="text-align: center;">
+
+    </table>
+</div>
+<div class="js-box box" id="js_box"></div>
+
+
+<div id="show_Sort" style="margin:0 auto;text-align:center;margin-top:5%;display: none">
+    <table cellpadding="0" cellspacing="0" style="width:40%;margin:0 auto;">
+        <tr class="Sort_First">
+            <td colspan="3" th:if="${thisLinks eq '2'}" th:text="第一环节和第二环节排名"></td>
+            <td colspan="3" th:if="${thisLinks eq '3'}" th:text="第三环节排名"></td>
+            <td colspan="3" th:if="${thisLinks eq '4'}" th:text="第四环节排名"></td>
+            <td colspan="3" th:if="${thisLinks eq '5'}" th:text="第五环节排名"></td>
+
+        </tr>
+        <tr th:each="list,i:${finalScoreListSort}">
+            <td style="text-align: center;width: 30%" th:text="${i.index+1}"></td>
+            <td th:text="${list.userPersonsName}"></td>
+            <td th:text="${list.finalScore}"></td>
+        </tr>
+    </table>
+</div>
+
+
+
+<script src="../static/js/jquery-3.3.1.min.js"></script>
+<script src="../static/layui/layui.all.js"></script>
+<script type="text/javascript">
+    ;!function () {
+        var layer = layui.layer,
+            form = layui.form;
+        //连接到websocket
+        var webSocketUrl = "ws://10.2.51.69:8088/websocket/[(${session.user.userName})]";
+        //var webSocketUrl = "ws://10.2.135.10:8088/websocket/[(${session.user.userName})]";
+        var socket = new WebSocket(webSocketUrl);
+
+        //获取得分事件
+        to_score("[(${finalScores})]");
+        //获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+            if (msg.data !== "连接成功") {
+                // 解析JSON串
+                var data = JSON.parse(msg.data);
+                //第一环节
+                if (data.message.thisLinks === 1 && data.message.userSortnum !== -1) {
+                    //跳转至第一环节
+                    console.log("跳转至第一环节");
+                    window.location.href = "/speech?userSortnum=" + data.message.userSortnum + "&thisLinks=" + data.message.thisLinks;
+                }
+
+
+                /*if (data.message.userSortnum !== -1 && data.message.thisLinks === 2) {
+                    // 跳转 第二环节选题卡页面
+                    window.location.href = "/topic?userSortnum=" + data.message.userSortnum + "&thisLinks=" + data.message.thisLinks;
+                }*/
+                if (data.message.userSortnum === -1) {
+                    // 跳转到规则页面
+                    window.location.href = "/process?this_Links=" + data.message.thisLinks;
+                }
+                if (data.message.userSortnum !== -1 && data.message.thisLinks === 3) {
+                    // 跳转 第三环节选题卡页面
+                    window.location.href = "/topic?userSortnum=" + data.message.userSortnum + "&thisLinks=" + data.message.thisLinks;
+                }
+                if (data.message.userSortnum !== -1 && data.message.thisLinks === 5) {
+                    // 跳转 第五环节选题卡页面
+                    window.location.href = "/topic?userSortnum=" + data.message.userSortnum + "&thisLinks=" + data.message.thisLinks;
+                }
+
+            }
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("websocket已关闭");
+
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            console.log("websocket发生了错误");
+        }
+
+    }();
+
+
+    function to_score(score) {
+        var Event = {
+            // 例 510,085.00
+            number: function (digit) {
+                var num_arr = [];
+                for (var i = 0; i < digit.length; i++) {
+                    num_arr.push(digit.charAt(i));
+                }
+
+                return num_arr;
+            },
+            dom: function (arr) {
+                var str = '';
+                for (var i = 0; i < arr.length; i++) {
+                    if (parseInt(arr[i]) >= 0) {
+                        str += '<div class="l js-l-box digit-container" data-show=' + arr[i] + '>\
+	                  <span>0</span>\
+	                  <span>1</span>\
+	                  <span>2</span>\
+	                  <span>3</span>\
+	                  <span>4</span>\
+	                  <span>5</span>\
+	                  <span>6</span>\
+	                  <span>7</span>\
+	                  <span>8</span>\
+	                  <span>9</span>\
+	                </div>';
+                    } else {
+                        str += '<div class="sign-box l"><span>' + arr[i] + '</span></div>';
+                    }
+                }
+                return str;
+            },
+            animation: function () {
+                var height = $(".js-box").height();
+                $(".js-l-box").each(function (i) {
+                    var num = parseInt($(this).data("show"));
+                    var scrollTop = 0;
+                    var scrollTop = height * num;
+                    $(this).css("margin-top", 0);
+                    $(this).animate({marginTop: -scrollTop}, 1500);
+                    console.log(scrollTop);
+                });
+            }
+        };
+        var final_arr = Event.number(score);
+        $(".js-box").html(Event.dom(final_arr));
+        Event.animation();
+
+
+        setTimeout(show_Sort,5000);
+    }
+
+    function show_Sort(){
+        //关闭得分界面
+        $('#title_content').hide("slow");
+        $('#js_box').hide("slow");
+        //打开排名界面
+        $('#show_Sort').show("slow");
+    }
+</script>
+
+</body>
+</html>

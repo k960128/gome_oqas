@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gome.mapper.JudgesScoresMapper">
+  <resultMap id="BaseResultMap" type="com.gome.pojo.JudgesScores">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="JUDGES_ID" jdbcType="INTEGER" property="judgesId" />
+    <result column="JUDGES_NAME" jdbcType="VARCHAR" property="judgesName" />
+    <result column="SCORE" jdbcType="DOUBLE" property="score" />
+    <result column="PLAYER_ID" jdbcType="INTEGER" property="playerId" />
+    <result column="PLAYER_NAME" jdbcType="VARCHAR" property="playerName" />
+    <result column="THIS_LINKS" jdbcType="VARCHAR" property="thisLinks" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, JUDGES_ID, JUDGES_NAME, SCORE, PLAYER_ID, PLAYER_NAME, THIS_LINKS
+  </sql>
+  <select id="selectByExample" parameterType="com.gome.pojo.JudgesScoresExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from judges_scores
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from judges_scores
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from judges_scores
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.gome.pojo.JudgesScoresExample">
+    delete from judges_scores
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.gome.pojo.JudgesScores">
+    insert into judges_scores (ID, JUDGES_ID, JUDGES_NAME, 
+      SCORE, PLAYER_ID, PLAYER_NAME, 
+      THIS_LINKS)
+    values (#{id,jdbcType=INTEGER}, #{judgesId,jdbcType=INTEGER}, #{judgesName,jdbcType=VARCHAR}, 
+      #{score,jdbcType=DOUBLE}, #{playerId,jdbcType=INTEGER}, #{playerName,jdbcType=VARCHAR}, 
+      #{thisLinks,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gome.pojo.JudgesScores">
+    insert into judges_scores
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="judgesId != null">
+        JUDGES_ID,
+      </if>
+      <if test="judgesName != null">
+        JUDGES_NAME,
+      </if>
+      <if test="score != null">
+        SCORE,
+      </if>
+      <if test="playerId != null">
+        PLAYER_ID,
+      </if>
+      <if test="playerName != null">
+        PLAYER_NAME,
+      </if>
+      <if test="thisLinks != null">
+        THIS_LINKS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="judgesId != null">
+        #{judgesId,jdbcType=INTEGER},
+      </if>
+      <if test="judgesName != null">
+        #{judgesName,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="playerId != null">
+        #{playerId,jdbcType=INTEGER},
+      </if>
+      <if test="playerName != null">
+        #{playerName,jdbcType=VARCHAR},
+      </if>
+      <if test="thisLinks != null">
+        #{thisLinks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.gome.pojo.JudgesScoresExample" resultType="java.lang.Long">
+    select count(*) from judges_scores
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update judges_scores
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.judgesId != null">
+        JUDGES_ID = #{record.judgesId,jdbcType=INTEGER},
+      </if>
+      <if test="record.judgesName != null">
+        JUDGES_NAME = #{record.judgesName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.score != null">
+        SCORE = #{record.score,jdbcType=DOUBLE},
+      </if>
+      <if test="record.playerId != null">
+        PLAYER_ID = #{record.playerId,jdbcType=INTEGER},
+      </if>
+      <if test="record.playerName != null">
+        PLAYER_NAME = #{record.playerName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.thisLinks != null">
+        THIS_LINKS = #{record.thisLinks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update judges_scores
+    set ID = #{record.id,jdbcType=INTEGER},
+      JUDGES_ID = #{record.judgesId,jdbcType=INTEGER},
+      JUDGES_NAME = #{record.judgesName,jdbcType=VARCHAR},
+      SCORE = #{record.score,jdbcType=DOUBLE},
+      PLAYER_ID = #{record.playerId,jdbcType=INTEGER},
+      PLAYER_NAME = #{record.playerName,jdbcType=VARCHAR},
+      THIS_LINKS = #{record.thisLinks,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gome.pojo.JudgesScores">
+    update judges_scores
+    <set>
+      <if test="judgesId != null">
+        JUDGES_ID = #{judgesId,jdbcType=INTEGER},
+      </if>
+      <if test="judgesName != null">
+        JUDGES_NAME = #{judgesName,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        SCORE = #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="playerId != null">
+        PLAYER_ID = #{playerId,jdbcType=INTEGER},
+      </if>
+      <if test="playerName != null">
+        PLAYER_NAME = #{playerName,jdbcType=VARCHAR},
+      </if>
+      <if test="thisLinks != null">
+        THIS_LINKS = #{thisLinks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gome.pojo.JudgesScores">
+    update judges_scores
+    set JUDGES_ID = #{judgesId,jdbcType=INTEGER},
+      JUDGES_NAME = #{judgesName,jdbcType=VARCHAR},
+      SCORE = #{score,jdbcType=DOUBLE},
+      PLAYER_ID = #{playerId,jdbcType=INTEGER},
+      PLAYER_NAME = #{playerName,jdbcType=VARCHAR},
+      THIS_LINKS = #{thisLinks,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>分数页面</title>
+    <link href="../static/favicon.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+
+</head>
+<body>
+<div>
+    <h1>分数页面</h1>
+</div>
+</body>
+<script src="../static/js/jquery-3.3.1.min.js"></script>
+<script src="../static/layui/layui.all.js"></script>
+<script>
+    ;!function () {
+        var layer = layui.layer,
+            form = layui.form;
+        //连接到websocket
+         var webSocketUrl = "ws://10.2.51.69:8088/websocket/[(${session.user.userName})]";
+        //var webSocketUrl = "ws://10.2.135.10:8088/websocket/[(${session.user.userName})]";
+        var socket = new WebSocket(webSocketUrl);
+
+
+        //获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+            if (msg.data !== "连接成功") {
+                // 解析JSON串
+                var data = JSON.parse(msg.data);
+                // if (data.message.userSortnum === -1) {
+                //     // 跳转到规则页面
+                //     window.location.href = "/process?this_Links=" + data.message.thisLinks;
+                // }
+            }
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("websocket已关闭");
+
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            console.log("websocket发生了错误");
+        }
+    }();
+</script>
+</html>
