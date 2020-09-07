@@ -13,4 +13,6 @@ import java.util.List;
 public interface JudgesScoresService {
 
     List<JudgesScores> findAllByPlayerId(int player_id,String thisLinks);
+
+    int getCountJudges(String thisLinks);
 }

@@ -60,7 +60,7 @@ public class ScoreController {
         System.out.println(gomeUser.getCompetitionOrder());
         System.out.println(userSortnum);
         System.out.println(gomeUser.getCompetitionOrder() == userSortnum);
-        //如果是当前答题用户用户
+        //如果是当前答题用户
         if (gomeUser.getCompetitionOrder() == userSortnum) {
             if (thisLinks.equals("2")) {
                 System.out.println("当前第二环节");
@@ -164,11 +164,18 @@ public class ScoreController {
             judges_name = judgesScoresList.get(0).getJudgesName();
             for (JudgesScores judgesScores : judgesScoresList) {
                 scores += (Double) judgesScores.getScore();
-                if (!judges_name.equals(judgesScores.getJudgesName())) {
+
+                if(judges_name.equals(judgesScores.getJudgesName())){
+                    continue;
+                }else{
+                    judges_name = judgesScores.getJudgesName();
                     count++;
                 }
                 System.out.println(judgesScores.toString());
             }
+
+            System.out.println("score:"+scores);
+            System.out.println("count:"+count);
             scores /= count;
             finalScore = new FinalScore();
             finalScore.setThisLinks(thisLinks);

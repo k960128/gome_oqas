@@ -32,4 +32,14 @@ public class JudgesScoresServiceImpl implements JudgesScoresService {
         List<JudgesScores> judgesScores = judgesScoresMapper.selectByExample(example);
         return judgesScores;
     }
+
+    @Override
+    public int getCountJudges(String thisLinks) {
+
+        JudgesScoresExample example = new JudgesScoresExample();
+        example.setDistinct(false);
+        JudgesScoresExample.Criteria criteria = example.createCriteria();
+        criteria.andThisLinksEqualTo(thisLinks);
+        return (int)judgesScoresMapper.countByExample(example);
+    }
 }
