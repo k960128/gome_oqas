@@ -1,199 +1,282 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <title>第四环节·群英舌战</title>
-    <link href="../static/bootstrap/css/bootstrap.css" rel="stylesheet"/>
-    <style type="text/css">
-        body {
-            background: #2E2E2E;
-            color: white;
-        }
+	<head>
+		<meta charset="utf-8">
+		<title>第四环节，群英舌战</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+		<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+		<style>
+			body {
+				overflow-y: hidden;
+				background-color: #1B242F;
+			}
 
-        .body-s {
-            width: 100%;
+			.div_center_top_img_content table {
+				width: 100%;
+				margin-top: 5%;
+				height: 50%;
+				/* border: 1px sienna solid; */
+			}
 
-        }
+			.div_center_top_img_content table tr {
+				font-size: 18px;
+				color: #FFF9EC;
+				text-align: center;
+				height: 100%;
+				/* border: 1px solid #0000FF; */
+			}
 
-        .t-1 {
-            color: red;
-            float: left;
-            margin-left: 80px;
-            margin-top: 100px;
+			.div_center_top_img_content table tr:nth-child(1) {
+				height: auto;
 
-        }
-
-        .t-2 {
-            color: blue;
-            float: left;
-            margin-left: 80px;
-            margin-top: 140px;
-        }
-
-        .div-1,
-        .div-2 {
-            width: 70%;
-            text-align: center;
-            margin: 0 auto;
-        }
-
-        .div-1 .test-img img {
-            display: inline-block;
-            max-width: 110%;
-            width: 200px;
-            height: 200px;
-            padding: 1.5px;
-            line-height: 1.42857143;
-            /* border: 4px solid red; */
-            border-radius: 6px;
-            -webkit-transition: all .2s ease-in-out;
-            -o-transition: all .2s ease-in-out;
-            transition: all .2s ease-in-out;
-            margin: 60px auto 100px auto;
-        }
-
-        .div-2 .test-img img {
-            display: inline-block;
-            max-width: 110%;
-            width: 200px;
-            height: 200px;
-            padding: 1.5px;
-            line-height: 1.42857143;
-            /*border: 4px solid blue;*/
-            border-radius: 6px;
-            -webkit-transition: all .2s ease-in-out;
-            -o-transition: all .2s ease-in-out;
-            transition: all .2s ease-in-out;
-            margin: 100px auto 40px auto;
-        }
-
-        .header-s {
-            text-align: center;
-        }
-
-        .border1 {
-            transform: scale(1.2);
-        }
-    </style>
-</head>
-<body>
-<div>
-    <div class="body-s">
-        <div class="t-1">
-            <h1>正方</h1>
-        </div>
-        <div class="div-1 row">
-            <div th:each="r:${list}" class="col-md-2 col-sm-2 col-xs-6">
-                <div th:if="${r.competitionOrder le 6}" class="test-img">
-                    <img th:class="${r.userPersonsName}" th:src="${r.photoUrl}">
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="header-s">
-        <h2><span id="t-3"></span></h2>
-        <h2><span id="t-4"></span></h2>
-    </div>
-    <div class="body-s">
-        <div class="t-2">
-            <h1>反方</h1>
-        </div>
-        <div class="div-2 row">
-            <div th:each="l:${list}" class="col-md-2 col-sm-2 col-xs-6">
-                <div th:if="${l.competitionOrder gt 6}" class="test-img">
-                    <img th:class="${l.userPersonsName}" th:src="${l.photoUrl}">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</body>
-<script src="../static/js/jquery-3.3.1.min.js"></script>
-<script src="../static/bootstrap/js/bootstrap.min.js"></script>
-<script src="../static/layui/layui.all.js"></script>
-<script>
-    // var webSocketUrl = "ws://10.2.51.69:8088/websocket/";
-    // var webSocketUrl = "ws://10.2.135.10:8088/websocket/publicscreen";
-    var webSocketUrl = "ws://10.2.51.69:8088/websocket/[(${session.user.userName})]";
-    var socket = new WebSocket(webSocketUrl);
-    ;!function () {
-        var layer = layui.layer,
-            form = layui.form,
-            util = layui.util,
-            $ = layui.$;
+			}
 
 
-        //连接到websocket
-        //获得消息事件
-        socket.onmessage = function (msg) {
-            console.log(msg.data);
-            if (msg.data !== "连接成功") {
-                // 解析JSON串
-                //{"fromUserId":"admin","message":{"currentLinksName":"第四环节、正方一辩","thisLinks":4,"userSortnum":1,"isQuartz":"否","sortNum":71,"id":70,"isEnable":"是"},"toUserId":"all"}
-                var data = JSON.parse(msg.data);
-                if (data.message.userSortnum !== -1) {
-                    $.ajaxSettings.async = false;
-                    $.post("/argue-id", {'id': data.message.userSortnum}, function (result) {
-                        if (result.status === 200) {
-                            $("img").removeClass("border1");
-                            // 改变图片大小
-                            $("." + result.data.userPersonsName).addClass("border1");
-                            //1. js获取当bai前时间
-                            var date = new Date();
-                            var min = date.getMinutes();
-                            //3. 设置当前时间+5分钟：把zhi当前分钟数+5后的值重新设置为date对象的分钟数
-                            date.setMinutes(min + 2);
-                            // 设置开始时间和结束时间
-                            var endTime = date.getTime();
-                            var nowDate = new Date().getTime();
-                            // 1.开始时间是当前时间，结束时间是数据库的时间*5分钟
-                            util.countdown(endTime, nowDate, function (date, nowDate, timer) {
-                                // 1. 如果加的五分钟小于当前时间
-                                var str = date[2] + '分' + date[3] + '秒';
-                                $('#t-4').html('倒计时：' + str);
-                                if (endTime <= nowDate) {
-                                    clearInterval(timer);
-                                    $("." + result.data.userPersonsName).removeClass("border1");
-                                }
-                            });
-                            // 改变字体颜色
-                            if (result.data.userId <= 6) {
-                                $('#t-3').html('正方' + result.data.competitionOrder + '辩：' + result.data.userPersonsName);
-                                $('#t-3').css("color", "red");
-                            } else {
-                                var n = 6;
-                                var m = parseInt(result.data.competitionOrder);
-                                var mn = m - n;
-                                $('#t-3').html('反方' + mn + '辩：' + result.data.userPersonsName);
-                                $('#t-3').css("color", "blue");
 
-                            }
-                        }
-                    }, "json");
-                    $.ajaxSettings.async = true;
-                }
+			.div_center_button_img_content table {
+				/* border: 0.0625rem solid #0000FF; */
+				width: 100%
+			}
 
-                //{"fromUserId":"admin","message":{"currentLinksName":"第四环节、开始公布成绩","thisLinks":4,"userSortnum":-1,"isQuartz":"否","sortNum":98,"id":97,"remarks":"攻辩过程完毕后，主持人示意评委进行评分，随后公布得分","isEnable":"是"},"toUserId":"all"}
-                if (data.message.userSortnum === -1 && data.message.thisLinks === 4) {
-                    // 跳转到得分页面
-                    window.location.href = "/score?thisLinks="+data.message.userSortnum+"&userSortnum="+data.message.userSortnum;
-                }
-            }
+			.div_center_button_img_content table tr {
+				font-size: 18px;
+				color: #FFF9EC;
+				text-align: center;
+				height: 100%;
 
-        };
-        //关闭事件
-        socket.onclose = function () {
-            console.log("websocket已关闭");
+			}
 
-        };
-        //发生了错误事件
-        socket.onerror = function () {
-            console.log("websocket发生了错误");
-        }
+			.div_center_button_img_content table tr:nth-child(1) {
+				height: 100%;
+			}
 
 
-    }();
+
+			img {
+
+				height: 12%;
+				width: 80%;
+				border-radius: 10px;
+				transition: all 1s;
+
+			}
+
+			img:hover {
+				/* border: #00A78E 2px solid;
+				height: 14%;
+				width: 85%; */
+				transform: scale(1.1);
+			}
 
 
-</script>
+			.layui-container {
+				margin: 0 auto;
+				height: 600px;
+				width: 100%;
+				/* border: 1px solid #0000FF; */
+			}
+
+			.div_left {
+				width: 15%;
+				height: 100%;
+				float: left;
+				position: relative;
+			}
+			.div_left .vs{
+				width: 100%;
+				text-align: center;
+				color: #FFB800;
+				font-size: 80px;
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+			.div_left .zheng-bian{
+				width: 100%;
+				text-align: center;
+				color: white;
+				font-size: 26px;
+				position: absolute;
+				top: 25%;
+				transform: translateY(-25%);
+			}
+			.div_left .fan-bian{
+				width: 100%;
+				text-align: center;
+				color: white;
+				font-size: 26px;
+				position: absolute;
+				top: 75%;
+				transform: translateY(-75%);
+			}
+
+			.div_center {
+				width: 70%;
+				float: left;
+
+			}
+
+			.div_right {
+				/* background: #0000FF; */
+
+				width: 15%;
+				float: left;
+			}
+
+			.div_center_top {
+				height: 50%;
+			}
+
+			.div_center_button {
+				height: 50%;
+			}
+
+			.div_center_top_img {
+				height: 74%;
+			}
+
+			.div_center_top_msg {
+				font-size: 20px;
+				height: 20%;
+				/* background-color: #00A78E; */
+				text-align: center;
+			}
+
+			.div_center_button_img {
+				height: 74%;
+
+			}
+
+			.div_center_button_msg {
+				font-size: 20px;
+				height: 20%;
+				/* background-color: #00A78E; */
+				text-align: center;
+			}
+
+			.tr-h {
+				line-height: 50px;
+			}
+
+			.bian-button {
+				color: blue;
+			}
+
+			.bian-top {
+				color: red;
+			}
+
+			.jishi {
+				color: white;
+			}
+
+			.img-top td img {
+				border-width: 4px;
+				border-color: red;
+				border-style: solid;
+			}
+
+			.img-button td img {
+				border-width: 4px;
+				border-color: blue;
+				border-style: solid;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="layui-container" class="layui-container">
+
+			<!-- <div class="layui-row"> -->
+			<div id="div_left" class="div_left">
+				<!--正方辩题-->
+				<span class="zheng-bian" th:text="${title1}"></span><br>
+				<span class="vs">VS</span><br>
+				<!--反方辩题-->
+				<span class="fan-bian" th:text="${title2}"></span>
+			</div>
+			<div id="div_center" class="div_center">
+				<div class="div_center_top">
+					<div class="div_center_top_img">
+						<div class="div_center_top_img_content">
+							<table cellpadding="0" cellspacing="0">
+								<tr class="img-top" >
+									<td th:each="gomeUser:${gomeUserList}">
+										<img th:if="${gomeUser.competitionOrder lt 6}" th:src="${gomeUser.photoUrl}">
+									</td>
+								</tr>
+								<tr class="tr-h" >
+									<td th:each="gomeUser:${gomeUserList}" th:if="${gomeUser.competitionOrder lt 6}" th:text="${gomeUser.userPersonsName}" ></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<div class="div_center_top_msg">
+						<span class="bian-top">正方一辩</span>
+						<button class="layui-btn layui-btn-sm  layui-btn-warm">结束</button>
+						<br>
+						<span class="jishi">倒计时:0分0秒</span>
+					</div>
+				</div>
+
+				<div class="div_center_button">
+					<div class="div_center_button_img">
+						<div class="div_center_button_img_content">
+							<table cellpadding="0" cellspacing="0">
+								<tr class="img-button">
+									<td><img src="../static/argue/images/选手照片/关海艳.jpg"></td>
+									<td><img src="../static/argue/images/选手照片/关海艳.jpg"></td>
+									<td><img src="../static/argue/images/选手照片/关海艳.jpg"></td>
+									<td><img src="../static/argue/images/选手照片/关海艳.jpg"></td>
+									<td><img src="../static/argue/images/选手照片/关海艳.jpg"></td>
+								</tr>
+								<tr class="tr-h">
+									<td>1、郭淑卿</td>
+									<td>2、郭淑卿</td>
+									<td>3、郭淑卿</td>
+									<td>4、郭淑卿</td>
+									<td>5、郭淑卿</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<div class="div_center_button_msg">
+						<span class="bian-button">反方一辩</span>
+						<button class="layui-btn layui-btn-sm layui-btn-warm">结束</button>
+						<br>
+						<span class="jishi">倒计时:0分0秒</span>
+					</div>
+				</div>
+			</div>
+			<div id="div_right" class="div_right">
+
+			</div>
+		</div>
+		<!-- </div> -->
+
+
+
+		<script src="../static/layui/layui.all.js" charset="utf-8"></script>
+
+		<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+		<script>
+			;
+			! function() {
+				var layer = layui.layer,
+					$ = layui.$;
+
+
+				$(".div_left").height($(window).height());
+				$(".div_right").height($(window).height());
+				$(".div_center").height($(window).height());
+				$(".layui-container").height($(window).height());
+
+
+			}();
+		</script>
+
+	</body>
 </html>

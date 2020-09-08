@@ -60,4 +60,17 @@ public class QaQuestionList {
     public void setScore(Integer score) {
         this.score = score;
     }
+
+
+    @Override
+    public String toString() {
+        return "QaQuestionList{" +
+                "id=" + id +
+                ", questionTitle='" + questionTitle + '\'' +
+                ", questionType='" + questionType + '\'' +
+                ", answer='" + answer + '\'' +
+                ", thisNumber=" + thisNumber +
+                ", score=" + score +
+                '}';
+    }
 }

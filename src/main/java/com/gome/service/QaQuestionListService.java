@@ -20,4 +20,6 @@ public interface QaQuestionListService {
     boolean ifCheckbox(Integer id);
 
     ResultUtil calculateScore(List<QaQuestionReply> list);
+
+    QaQuestionList getQuestion(int id);
 }

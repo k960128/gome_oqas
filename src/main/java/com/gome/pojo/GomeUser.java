@@ -100,4 +100,20 @@ public class GomeUser {
     public void setCompetitionOrder(Integer competitionOrder) {
         this.competitionOrder = competitionOrder;
     }
+
+    @Override
+    public String toString() {
+        return "GomeUser{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userPass='" + userPass + '\'' +
+                ", userStatu='" + userStatu + '\'' +
+                ", userPersonsName='" + userPersonsName + '\'' +
+                ", photoUrl='" + photoUrl + '\'' +
+                ", branch='" + branch + '\'' +
+                ", isSubmitRobot='" + isSubmitRobot + '\'' +
+                ", videoUrl='" + videoUrl + '\'' +
+                ", competitionOrder=" + competitionOrder +
+                '}';
+    }
 }
