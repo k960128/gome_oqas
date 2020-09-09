@@ -1,282 +1,388 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<meta charset="utf-8">
-		<title>第四环节，群英舌战</title>
-		<meta name="renderer" content="webkit">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
-		<!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
-		<style>
-			body {
-				overflow-y: hidden;
-				background-color: #1B242F;
-			}
+<head>
+    <meta charset="utf-8">
+    <title>第四环节，群英舌战</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+    <style>
+        body {
 
-			.div_center_top_img_content table {
-				width: 100%;
-				margin-top: 5%;
-				height: 50%;
-				/* border: 1px sienna solid; */
-			}
+            overflow-y: hidden;
+            background-color: #1B242F;
+        }
 
-			.div_center_top_img_content table tr {
-				font-size: 18px;
-				color: #FFF9EC;
-				text-align: center;
-				height: 100%;
-				/* border: 1px solid #0000FF; */
-			}
+        .div_center_top_img_content table {
+            width: 100%;
+            margin-top: 5%;
+            height: 50%;
+            /* border: 1px sienna solid; */
+        }
 
-			.div_center_top_img_content table tr:nth-child(1) {
-				height: auto;
+        .div_center_top_img_content table tr {
+            font-size: 18px;
+            color: #FFF9EC;
+            text-align: center;
+            height: 100%;
+            /* border: 1px solid #0000FF; */
+        }
 
-			}
+        .div_center_top_img_content table tr:nth-child(1) {
+            height: auto;
 
+        }
 
+        .div_center_button_img_content table {
+            width: 100%
+        }
 
-			.div_center_button_img_content table {
-				/* border: 0.0625rem solid #0000FF; */
-				width: 100%
-			}
+        .div_center_button_img_content table tr {
+            font-size: 18px;
+            color: white;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+        }
 
-			.div_center_button_img_content table tr {
-				font-size: 18px;
-				color: #FFF9EC;
-				text-align: center;
-				height: 100%;
+        /*.div_center_button_img_content table tr:nth-child(1) {*/
+        /*	height: 100%;*/
+        /*}*/
+        .img-top td, .img-button td {
+            width: 20%;
+            height: 100%;
+            /*position: relative;*/
+        }
 
-			}
+        .img-top td img {
+            height: 95%;
+            width: 80%;
+            border-radius: 10px;
+            transition: all 1s;
+            border-width: 4px;
+            border-color: red;
+            border-style: solid;
+            /*position: absolute;*/
+            background-size: 100% 100%;
 
-			.div_center_button_img_content table tr:nth-child(1) {
-				height: 100%;
-			}
+        }
 
+        .img-button td img {
+            height: 90%;
+            width: 80%;
+            border-radius: 10px;
+            transition: all 1s;
+            border-width: 4px;
+            border-color: blue;
+            border-style: solid;
+            /*position: absolute;*/
+            background-size: 100% 100%;
 
+        }
 
-			img {
+        .img-top td img:hover, .img-button td img:hover {
+            transform: scale(1.1);
+        }
 
-				height: 12%;
-				width: 80%;
-				border-radius: 10px;
-				transition: all 1s;
+        .layui-container {
+            margin: 0 auto;
+            height: 600px;
+            width: 100%;
+            /* border: 1px solid #0000FF; */
+        }
 
-			}
+        .div_left {
+            width: 15%;
+            height: 100%;
+            float: left;
+            position: relative;
+        }
 
-			img:hover {
-				/* border: #00A78E 2px solid;
-				height: 14%;
-				width: 85%; */
-				transform: scale(1.1);
-			}
+        .div_left .vs {
+            width: 100%;
+            text-align: center;
+            color: #FFB800;
+            font-size: 80px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
 
+        .div_left .zheng-bian {
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 26px;
+            position: absolute;
+            top: 25%;
+            transform: translateY(-25%);
+        }
 
-			.layui-container {
-				margin: 0 auto;
-				height: 600px;
-				width: 100%;
-				/* border: 1px solid #0000FF; */
-			}
+        .div_left .fan-bian {
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 26px;
+            position: absolute;
+            top: 75%;
+            transform: translateY(-75%);
+        }
 
-			.div_left {
-				width: 15%;
-				height: 100%;
-				float: left;
-				position: relative;
-			}
-			.div_left .vs{
-				width: 100%;
-				text-align: center;
-				color: #FFB800;
-				font-size: 80px;
-				position: absolute;
-				top: 50%;
-				transform: translateY(-50%);
-			}
-			.div_left .zheng-bian{
-				width: 100%;
-				text-align: center;
-				color: white;
-				font-size: 26px;
-				position: absolute;
-				top: 25%;
-				transform: translateY(-25%);
-			}
-			.div_left .fan-bian{
-				width: 100%;
-				text-align: center;
-				color: white;
-				font-size: 26px;
-				position: absolute;
-				top: 75%;
-				transform: translateY(-75%);
-			}
+        .div_center {
+            width: 70%;
+            float: left;
 
-			.div_center {
-				width: 70%;
-				float: left;
+        }
 
-			}
+        .div_right {
+            /* background: #0000FF; */
 
-			.div_right {
-				/* background: #0000FF; */
+            width: 15%;
+            float: left;
+        }
 
-				width: 15%;
-				float: left;
-			}
+        .div_center_top {
+            height: 50%;
+        }
 
-			.div_center_top {
-				height: 50%;
-			}
+        .div_center_button {
+            height: 50%;
+        }
 
-			.div_center_button {
-				height: 50%;
-			}
+        .div_center_top_img {
+            height: 74%;
+        }
 
-			.div_center_top_img {
-				height: 74%;
-			}
+        .div_center_top_msg {
+            font-size: 20px;
+            height: 20%;
+            /* background-color: #00A78E; */
+            text-align: center;
+        }
 
-			.div_center_top_msg {
-				font-size: 20px;
-				height: 20%;
-				/* background-color: #00A78E; */
-				text-align: center;
-			}
+        .div_center_button_img {
+            height: 74%;
 
-			.div_center_button_img {
-				height: 74%;
+        }
 
-			}
+        .div_center_button_msg {
+            font-size: 20px;
+            height: 20%;
+            /* background-color: #00A78E; */
+            text-align: center;
+        }
 
-			.div_center_button_msg {
-				font-size: 20px;
-				height: 20%;
-				/* background-color: #00A78E; */
-				text-align: center;
-			}
+        .tr-h {
+            line-height: 50px;
+        }
 
-			.tr-h {
-				line-height: 50px;
-			}
+        .bian-button {
+            color: blue;
+            transition: all 1s;
+        }
 
-			.bian-button {
-				color: blue;
-			}
+        .bian-top {
+            color: red;
+            transition: all 1s;
+        }
 
-			.bian-top {
-				color: red;
-			}
-
-			.jishi {
-				color: white;
-			}
-
-			.img-top td img {
-				border-width: 4px;
-				border-color: red;
-				border-style: solid;
-			}
-
-			.img-button td img {
-				border-width: 4px;
-				border-color: blue;
-				border-style: solid;
-			}
-		</style>
-	</head>
-	<body>
-
-		<div id="layui-container" class="layui-container">
-
-			<!-- <div class="layui-row"> -->
-			<div id="div_left" class="div_left">
-				<!--正方辩题-->
-				<span class="zheng-bian" th:text="${title1}"></span><br>
-				<span class="vs">VS</span><br>
-				<!--反方辩题-->
-				<span class="fan-bian" th:text="${title2}"></span>
-			</div>
-			<div id="div_center" class="div_center">
-				<div class="div_center_top">
-					<div class="div_center_top_img">
-						<div class="div_center_top_img_content">
-							<table cellpadding="0" cellspacing="0">
-								<tr class="img-top" >
-									<td th:each="gomeUser:${gomeUserList}">
-										<img th:if="${gomeUser.competitionOrder lt 6}" th:src="${gomeUser.photoUrl}">
-									</td>
-								</tr>
-								<tr class="tr-h" >
-									<td th:each="gomeUser:${gomeUserList}" th:if="${gomeUser.competitionOrder lt 6}" th:text="${gomeUser.userPersonsName}" ></td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					<div class="div_center_top_msg">
-						<span class="bian-top">正方一辩</span>
-						<button class="layui-btn layui-btn-sm  layui-btn-warm">结束</button>
-						<br>
-						<span class="jishi">倒计时:0分0秒</span>
-					</div>
-				</div>
-
-				<div class="div_center_button">
-					<div class="div_center_button_img">
-						<div class="div_center_button_img_content">
-							<table cellpadding="0" cellspacing="0">
-								<tr class="img-button">
-									<td><img src="../static/argue/images/选手照片/关海艳.jpg"></td>
-									<td><img src="../static/argue/images/选手照片/关海艳.jpg"></td>
-									<td><img src="../static/argue/images/选手照片/关海艳.jpg"></td>
-									<td><img src="../static/argue/images/选手照片/关海艳.jpg"></td>
-									<td><img src="../static/argue/images/选手照片/关海艳.jpg"></td>
-								</tr>
-								<tr class="tr-h">
-									<td>1、郭淑卿</td>
-									<td>2、郭淑卿</td>
-									<td>3、郭淑卿</td>
-									<td>4、郭淑卿</td>
-									<td>5、郭淑卿</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					<div class="div_center_button_msg">
-						<span class="bian-button">反方一辩</span>
-						<button class="layui-btn layui-btn-sm layui-btn-warm">结束</button>
-						<br>
-						<span class="jishi">倒计时:0分0秒</span>
-					</div>
-				</div>
-			</div>
-			<div id="div_right" class="div_right">
-
-			</div>
-		</div>
-		<!-- </div> -->
+        .jishi {
+            color: white;
+            transition: all 1s;
+        }
 
 
+    </style>
+</head>
+<body>
 
-		<script src="../static/layui/layui.all.js" charset="utf-8"></script>
+<div id="layui-container" class="layui-container">
 
-		<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
-		<script>
-			;
-			! function() {
-				var layer = layui.layer,
-					$ = layui.$;
+    <!-- <div class="layui-row"> -->
+    <div id="div_left" class="div_left">
+        <!--正方辩题-->
+        <span class="zheng-bian" th:text="${title1}"></span><br>
+        <span class="vs">VS</span><br>
+        <!--反方辩题-->
+        <span class="fan-bian" th:text="${title2}"></span>
+    </div>
+    <div id="div_center" class="div_center">
+        <div class="div_center_top">
+            <div class="div_center_top_img">
+                <div class="div_center_top_img_content">
+                    <table cellpadding="0" cellspacing="0">
+                        <tr class="img-top">
+                            <td th:each="l1:${list1}">
+                                <img th:id="${'img_'+l1.competitionOrder}" th:src="${l1.photoUrl}">
+                            </td>
+                        </tr>
+                        <tr class="tr-h">
+                            <td th:each="l1:${list1}" th:text="${l1.userPersonsName}" ></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="div_center_top_msg">
+                <span class="bian-top" id="bian1"></span>
+                <button style="display: none" class="layui-btn layui-btn-sm  layui-btn-warm">结束</button>
+                <br>
+                <span class="jishi" id="timer1">倒计时:0分0秒</span>
+            </div>
+        </div>
+
+        <div class="div_center_button">
+            <div class="div_center_button_img">
+                <div class="div_center_button_img_content">
+                    <table cellpadding="0" cellspacing="0">
+                        <tr class="img-button">
+                            <td th:each="l2:${list2}">
+                                <img th:id="${'img_'+l2.competitionOrder}" th:src="${l2.photoUrl}">
+                            </td>
+
+                        </tr>
+                        <tr class="tr-h">
+                            <td th:each="l2:${list2}" th:text="${l2.userPersonsName}" ></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="div_center_button_msg">
+                <span class="bian-button" id="bian2"></span>
+                <button style="display: none" class="layui-btn layui-btn-sm layui-btn-warm">结束</button>
+                <br>
+                <span class="jishi" id="timer2">倒计时:0分0秒</span>
+            </div>
+        </div>
+    </div>
+    <div id="div_right" class="div_right">
+
+    </div>
+</div>
+<!-- </div> -->
 
 
-				$(".div_left").height($(window).height());
-				$(".div_right").height($(window).height());
-				$(".div_center").height($(window).height());
-				$(".layui-container").height($(window).height());
+<script src="../static/js/jquery-3.3.1.min.js"></script>
+<script src="../static/layui/layui.all.js"></script>
+
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    var tid;
+    //连接到websocket
+    var webSocketUrl = "ws://10.2.51.69:8088/websocket/[(${session.user.userName})]";
+    // var webSocketUrl = "ws://10.2.135.10:8088/websocket/[(${session.user.userName})]";
+    var socket = new WebSocket(webSocketUrl);
+    $(".div_left").height($(window).height());
+    $(".div_right").height($(window).height());
+    $(".div_center").height($(window).height());
+    $(".layui-container").height($(window).height());
+
+    ;
+    !function () {
+        var layer = layui.layer,
+            form = layui.form,
+            $ = layui.$,
+            util = layui.util;
 
 
-			}();
-		</script>
+        //获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
 
-	</body>
+            if (msg.data !== "连接成功") {
+                // 解析JSON串
+                var data = JSON.parse(msg.data);
+                if(data.message.thisLinks=='4'){
+                    $('img').css("transform","scale(1)");
+                    $('#img_'+data.message.userSortnum).css("transform","scale(1.1)");
+
+                    //清空当前定时器
+                    clearInterval(tid);
+
+
+
+
+                    if(data.message.isQuartz=='0'){
+                        $('#timer2').css("color","white");
+                        layui.$('#timer2').html('倒计时:0分0秒');
+                        $('#timer1').css("color","red");
+                        $('#bian2').html("");
+                        $('#bian1').html(data.message.currentLinksName);
+                        // 倒计时
+                        //1. js获取当bai前时间
+                        var date = new Date();
+                        var min = date.getMinutes();
+                        //3. 设置当前时间+5分钟：把zhi当前分钟数+5后的值重新设置为date对象的分钟数
+                        date.setMinutes(min + 2);
+                        // 设置开始时间和结束时间
+                        var endTime = date.getTime();
+                        var nowDate = new Date().getTime();
+                        // 1.开始时间是当前时间，结束时间是数据库的时间*2分钟
+                        util.countdown(endTime, nowDate, function (date, nowDate, timer) {
+                            tid = timer;
+                            // 1. 如果加的五分钟小于当前时间
+                            var str = date[2] + '分' + date[3] + '秒';
+                            layui.$('#timer1').html('倒计时:'+str);
+                            // 如果结束时间小于或等于当前时间 弹出框
+                            if (endTime <= nowDate) {
+                                clearInterval(tid);
+                                $('img').css("transform","scale(1)");
+                                $('#timer1').css("color","white");
+                            }
+                            console.log("tid"+tid);
+                        });
+                    }
+
+
+                    if(data.message.isQuartz=='1'){
+                        $('#timer1').css("color","white");
+                        layui.$('#timer1').html('倒计时:0分0秒');
+                        $('#timer2').css("color","blue");
+                        $('#bian1').html("");
+                        $('#bian2').html(data.message.currentLinksName);
+                        // 倒计时
+                        //1. js获取当bai前时间
+                        var date = new Date();
+                        var min = date.getMinutes();
+                        //3. 设置当前时间+5分钟：把zhi当前分钟数+5后的值重新设置为date对象的分钟数
+                        date.setMinutes(min + 2);
+                        // 设置开始时间和结束时间
+                        var endTime = date.getTime();
+                        var nowDate = new Date().getTime();
+                        // 1.开始时间是当前时间，结束时间是数据库的时间*2分钟
+                        util.countdown(endTime, nowDate, function (date, nowDate, timer) {
+                            tid = timer;
+                            // 1. 如果加的五分钟小于当前时间
+                            var str = date[2] + '分' + date[3] + '秒';
+                            layui.$('#timer2').html('倒计时:'+str);
+                            // 如果结束时间小于或等于当前时间 弹出框
+                            if (endTime <= nowDate) {
+                                clearInterval(tid);
+                                $('img').css("transform","scale(1)");
+                                $('#timer2').css("color","white");
+                            }
+                            console.log("tid"+tid);
+                        });
+                    }
+                }
+            }
+
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("websocket已关闭");
+
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            console.log("websocket发生了错误");
+        }
+
+    }();
+
+
+</script>
+
+</body>
 </html>
