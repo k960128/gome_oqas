@@ -65,4 +65,6 @@ public class ArgueController {
         }
         return ResultUtil.build(2, "查无此参赛者");
     }
+
+
 }

@@ -45,7 +45,6 @@
     ;!function () {
         //连接到websocket
          var webSocketUrl = "ws://10.2.51.69:8088/websocket/[(${session.user.userName})]";
-        //var webSocketUrl = "ws://10.2.135.10:8088/websocket/[(${session.user.userName})]";
         var socket = new WebSocket(webSocketUrl);
 
         $("#span1").show("slow");

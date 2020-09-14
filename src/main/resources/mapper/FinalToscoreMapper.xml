@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gome.mapper.FinalToscoreMapper">
+  <resultMap id="BaseResultMap" type="com.gome.pojo.FinalToscore">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="FIRST_SCORE" jdbcType="DOUBLE" property="firstScore" />
+    <result column="SECOND_SCORE" jdbcType="DOUBLE" property="secondScore" />
+    <result column="THREE_SCORE" jdbcType="DOUBLE" property="threeScore" />
+    <result column="FOUR_SCORE" jdbcType="DOUBLE" property="fourScore" />
+    <result column="FIVE_SCORE" jdbcType="DOUBLE" property="fiveScore" />
+    <result column="OTHER_SCORE" jdbcType="DOUBLE" property="otherScore" />
+    <result column="FINAL_SCORE" jdbcType="DOUBLE" property="finalScore" />
+    <result column="USER_PERSONS_NAME" jdbcType="VARCHAR" property="userPersonsName" />
+    <result column="COMPETITION_ORDER" jdbcType="INTEGER" property="competitionOrder" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, FIRST_SCORE, SECOND_SCORE, THREE_SCORE, FOUR_SCORE, FIVE_SCORE, OTHER_SCORE, 
+    FINAL_SCORE, USER_PERSONS_NAME, COMPETITION_ORDER
+  </sql>
+  <select id="selectByExample" parameterType="com.gome.pojo.FinalToscoreExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from final_toscore
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from final_toscore
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from final_toscore
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.gome.pojo.FinalToscoreExample">
+    delete from final_toscore
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.gome.pojo.FinalToscore">
+    insert into final_toscore (ID, FIRST_SCORE, SECOND_SCORE, 
+      THREE_SCORE, FOUR_SCORE, FIVE_SCORE, 
+      OTHER_SCORE, FINAL_SCORE, USER_PERSONS_NAME, 
+      COMPETITION_ORDER)
+    values (#{id,jdbcType=INTEGER}, #{firstScore,jdbcType=DOUBLE}, #{secondScore,jdbcType=DOUBLE}, 
+      #{threeScore,jdbcType=DOUBLE}, #{fourScore,jdbcType=DOUBLE}, #{fiveScore,jdbcType=DOUBLE}, 
+      #{otherScore,jdbcType=DOUBLE}, #{finalScore,jdbcType=DOUBLE}, #{userPersonsName,jdbcType=VARCHAR}, 
+      #{competitionOrder,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gome.pojo.FinalToscore">
+    insert into final_toscore
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="firstScore != null">
+        FIRST_SCORE,
+      </if>
+      <if test="secondScore != null">
+        SECOND_SCORE,
+      </if>
+      <if test="threeScore != null">
+        THREE_SCORE,
+      </if>
+      <if test="fourScore != null">
+        FOUR_SCORE,
+      </if>
+      <if test="fiveScore != null">
+        FIVE_SCORE,
+      </if>
+      <if test="otherScore != null">
+        OTHER_SCORE,
+      </if>
+      <if test="finalScore != null">
+        FINAL_SCORE,
+      </if>
+      <if test="userPersonsName != null">
+        USER_PERSONS_NAME,
+      </if>
+      <if test="competitionOrder != null">
+        COMPETITION_ORDER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="firstScore != null">
+        #{firstScore,jdbcType=DOUBLE},
+      </if>
+      <if test="secondScore != null">
+        #{secondScore,jdbcType=DOUBLE},
+      </if>
+      <if test="threeScore != null">
+        #{threeScore,jdbcType=DOUBLE},
+      </if>
+      <if test="fourScore != null">
+        #{fourScore,jdbcType=DOUBLE},
+      </if>
+      <if test="fiveScore != null">
+        #{fiveScore,jdbcType=DOUBLE},
+      </if>
+      <if test="otherScore != null">
+        #{otherScore,jdbcType=DOUBLE},
+      </if>
+      <if test="finalScore != null">
+        #{finalScore,jdbcType=DOUBLE},
+      </if>
+      <if test="userPersonsName != null">
+        #{userPersonsName,jdbcType=VARCHAR},
+      </if>
+      <if test="competitionOrder != null">
+        #{competitionOrder,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.gome.pojo.FinalToscoreExample" resultType="java.lang.Long">
+    select count(*) from final_toscore
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update final_toscore
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.firstScore != null">
+        FIRST_SCORE = #{record.firstScore,jdbcType=DOUBLE},
+      </if>
+      <if test="record.secondScore != null">
+        SECOND_SCORE = #{record.secondScore,jdbcType=DOUBLE},
+      </if>
+      <if test="record.threeScore != null">
+        THREE_SCORE = #{record.threeScore,jdbcType=DOUBLE},
+      </if>
+      <if test="record.fourScore != null">
+        FOUR_SCORE = #{record.fourScore,jdbcType=DOUBLE},
+      </if>
+      <if test="record.fiveScore != null">
+        FIVE_SCORE = #{record.fiveScore,jdbcType=DOUBLE},
+      </if>
+      <if test="record.otherScore != null">
+        OTHER_SCORE = #{record.otherScore,jdbcType=DOUBLE},
+      </if>
+      <if test="record.finalScore != null">
+        FINAL_SCORE = #{record.finalScore,jdbcType=DOUBLE},
+      </if>
+      <if test="record.userPersonsName != null">
+        USER_PERSONS_NAME = #{record.userPersonsName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.competitionOrder != null">
+        COMPETITION_ORDER = #{record.competitionOrder,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update final_toscore
+    set ID = #{record.id,jdbcType=INTEGER},
+      FIRST_SCORE = #{record.firstScore,jdbcType=DOUBLE},
+      SECOND_SCORE = #{record.secondScore,jdbcType=DOUBLE},
+      THREE_SCORE = #{record.threeScore,jdbcType=DOUBLE},
+      FOUR_SCORE = #{record.fourScore,jdbcType=DOUBLE},
+      FIVE_SCORE = #{record.fiveScore,jdbcType=DOUBLE},
+      OTHER_SCORE = #{record.otherScore,jdbcType=DOUBLE},
+      FINAL_SCORE = #{record.finalScore,jdbcType=DOUBLE},
+      USER_PERSONS_NAME = #{record.userPersonsName,jdbcType=VARCHAR},
+      COMPETITION_ORDER = #{record.competitionOrder,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gome.pojo.FinalToscore">
+    update final_toscore
+    <set>
+      <if test="firstScore != null">
+        FIRST_SCORE = #{firstScore,jdbcType=DOUBLE},
+      </if>
+      <if test="secondScore != null">
+        SECOND_SCORE = #{secondScore,jdbcType=DOUBLE},
+      </if>
+      <if test="threeScore != null">
+        THREE_SCORE = #{threeScore,jdbcType=DOUBLE},
+      </if>
+      <if test="fourScore != null">
+        FOUR_SCORE = #{fourScore,jdbcType=DOUBLE},
+      </if>
+      <if test="fiveScore != null">
+        FIVE_SCORE = #{fiveScore,jdbcType=DOUBLE},
+      </if>
+      <if test="otherScore != null">
+        OTHER_SCORE = #{otherScore,jdbcType=DOUBLE},
+      </if>
+      <if test="finalScore != null">
+        FINAL_SCORE = #{finalScore,jdbcType=DOUBLE},
+      </if>
+      <if test="userPersonsName != null">
+        USER_PERSONS_NAME = #{userPersonsName,jdbcType=VARCHAR},
+      </if>
+      <if test="competitionOrder != null">
+        COMPETITION_ORDER = #{competitionOrder,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gome.pojo.FinalToscore">
+    update final_toscore
+    set FIRST_SCORE = #{firstScore,jdbcType=DOUBLE},
+      SECOND_SCORE = #{secondScore,jdbcType=DOUBLE},
+      THREE_SCORE = #{threeScore,jdbcType=DOUBLE},
+      FOUR_SCORE = #{fourScore,jdbcType=DOUBLE},
+      FIVE_SCORE = #{fiveScore,jdbcType=DOUBLE},
+      OTHER_SCORE = #{otherScore,jdbcType=DOUBLE},
+      FINAL_SCORE = #{finalScore,jdbcType=DOUBLE},
+      USER_PERSONS_NAME = #{userPersonsName,jdbcType=VARCHAR},
+      COMPETITION_ORDER = #{competitionOrder,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

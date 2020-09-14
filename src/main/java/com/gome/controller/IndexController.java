@@ -17,4 +17,9 @@ public class IndexController {
     public String toIndex() {
         return INDEX;
     }
+
+    @GetMapping("toindex")
+    public String toIndexs(){
+        return "to_index";
+    }
 }

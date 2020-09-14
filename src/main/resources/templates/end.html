@@ -1,0 +1,192 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>辩论环节</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../static/css/layui.css" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+    <style>
+        body {
+            background-size: cover;
+            -webkit-background-size: cover;
+            background-image: url(../static/images/youxiu.png);
+        }
+        #title{
+            position: absolute;
+            left: 60%;
+            top: 40%;
+            color: #FF9900 ;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        #youxiu{
+            position: absolute;
+            left: 60%;
+            top: 40%;
+            color: #FF9900 ;
+            font-size: 40px;
+            font-weight: bold;
+            display: none;
+        }
+
+
+        #tong{
+            position: absolute;
+            left: 60%;
+            top: 40%;
+            color: #FF9900 ;
+            font-size: 40px;
+            font-weight: bold;
+            display: none;
+        }
+
+        #yin{
+            position: absolute;
+            left: 60%;
+            top: 40%;
+            color: #FF9900 ;
+            font-size: 40px;
+            font-weight: bold;
+            display: none;
+        }
+        #jin{
+            position: absolute;
+            left: 60%;
+            top: 40%;
+            color: #FF9900 ;
+            font-size: 40px;
+            font-weight: bold;
+            display: none;
+        }
+        table tr td{
+            color: #FF9900 ;
+            font-size: 40px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div id="title">
+    请稍作休息，正在统计得分！
+</div>
+
+<div id="youxiu">
+    <table>
+        <tr th:each="l4:${list4}">
+            <td th:text="${l4}"></td>
+        </tr>
+    </table>
+
+</div>
+
+<div id="tong">
+    <table>
+        <tr th:each="l3:${list3}">
+            <td th:text="${l3}"></td>
+        </tr>
+    </table>
+</div>
+<div id="yin">
+    <table>
+        <tr th:each="l2:${list2}">
+            <td th:text="${l2}"></td>
+        </tr>
+    </table>
+</div>
+<div id="jin">
+    <table>
+        <tr th:each="l1:${list1}">
+            <td th:text="${l1}"></td>
+        </tr>
+    </table>
+</div>
+<audio preload="auto" autoplay loop  id="audio_bgm_div" src="../static/bgm/." type="audio/mpeg"></audio>
+</body>
+
+
+<script src="../static/js/jquery-3.3.1.min.js"></script>
+<script src="../static/js/layui.all.js" charset="utf-8"></script>
+<script>
+
+    var webSocketUrl = "ws://10.2.51.69:8088/websocket/[(${session.user.userName})]";
+    // var webSocketUrl = "ws://10.2.135.10:8088/websocket/[(${session.user.userName})]";
+    var socket = new WebSocket(webSocketUrl);
+
+    ;
+    !function () {
+        var layer = layui.layer,
+            form = layui.form,
+            $ = layui.$,
+            util = layui.util;
+
+
+//获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+
+            if (msg.data !== "连接成功") {
+                var data = JSON.parse(msg.data);
+                if(data.message.remarks=="优秀奖"){
+                    $('#audio_bgm_div')[0].autoplay="autoplay";
+                    //获取音量
+                    var v = $('#audio_bgm_div')[0].volume;
+                    console.log("v:"+v)
+                    //设置音量为0
+                    v = 0;
+                    //开始播放
+                    $('#audio_bgm_div')[0].play();
+                    var t = setInterval(function(){
+                        v+=0.1;
+                        console.log("v:"+v)
+                        if(v<=1){
+                            $('#audio_bgm_div')[0].volume = v;
+                        }else{
+                            clearInterval(t);
+                        }
+                    },200);
+
+
+
+                    $('#title').hide(this);
+                    $('#youxiu').show(this);
+                }
+                if(data.message.remarks=="铜奖"){
+                    $('body').css("background-image","url(../static/images/tong.JPG)");
+                    $('#youxiu').hide(this);
+                    $('#tong').show(this);
+                }
+                if(data.message.remarks=="银奖"){
+                    $('body').css("background-image","url(../static/images/yin.JPG)");
+                    $('#tong').hide(this);
+                    $('#yin').show(this);
+                }
+                if(data.message.remarks=="金奖"){
+                    $('body').css("background-image","url(../static/images/jin.JPG)");
+                    $('#yin').hide(this);
+                    $('#jin').show(this);
+                }
+                if(data.message.remarks=="index"){
+                    window.location.href="/toindex";
+                }
+
+            }
+
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("websocket已关闭");
+
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            console.log("websocket发生了错误");
+        }
+
+    }();
+
+
+</script>
+</html>

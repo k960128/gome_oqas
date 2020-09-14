@@ -115,7 +115,7 @@
 <script>
     //连接到websocket
     var webSocketUrl = "ws://10.2.51.69:8088/websocket/[(${session.user.userName})]";
-    // var webSocketUrl = "ws://10.2.135.10:8088/websocket/[(${session.user.userName})]";
+
     var socket = new WebSocket(webSocketUrl);
 
     $('#body').show("2000");
@@ -131,9 +131,22 @@
             var fields = $(data.form).serialize();
             $.post("/answer", fields, function (result) {
                 if (result.status == 200) {
-                    // 等待页面发送报文至所有端，已经答题完毕
-                    socket.send('{"toUserId":"all","message":{"title":"close_answer","thisLinks":"2","userSortnum":"[(${session.user.competitionOrder})]"}}');
-                    window.location.href = "/score?thisLinks=2&userSortnum=[(${session.user.competitionOrder})]";
+                    //1、如果是当前答题人，先进入收集分数功能，
+                    $.ajax({
+                        url: "/currentCountScore",
+                        type: "GET",
+                        data: {"userSortnum": "[(${session.user.competitionOrder})]", "thisLinks": "2"},
+                        dataType: "json",
+                        success: function (result) {
+                            console.log("计算成功！");
+                            socket.send('{"toUserId":"all","message":{"title":"close_answer","thisLinks":"2","userSortnum":"[(${session.user.competitionOrder})]"}}');
+                            //表示已经处理完数据，发送报文，并跳转页面
+                            window.location.href = "/score?thisLinks=2&userSortnum=[(${session.user.competitionOrder})]";
+                        },
+                        error: function (result) {
+
+                        }
+                    });
                 } else {
                     alert(result.msg);
                 }
@@ -182,8 +195,24 @@
                         $.post("/answer", $("#my-form").serialize(), function (result) {
                             if (result.status == 200) {
                                 // 等待页面
-                                socket.send('{"toUserId":"all","message":{"title":"close_answer","thisLinks":"2","userSortnum":"[(${session.user.competitionOrder})]"}}');
-                                window.location.href = "/score?thisLinks=2&userSortnum=[(${session.user.competitionOrder})]";
+
+
+                                //1、如果是当前答题人，先进入收集分数功能，
+                                $.ajax({
+                                    url: "/currentCountScore",
+                                    type: "GET",
+                                    data: {"userSortnum": "[(${session.user.competitionOrder})]", "thisLinks": "2"},
+                                    dataType: "json",
+                                    success: function (result) {
+                                        console.log("计算成功！");
+                                        socket.send('{"toUserId":"all","message":{"title":"close_answer","thisLinks":"2","userSortnum":"[(${session.user.competitionOrder})]"}}');
+                                        //表示已经处理完数据，发送报文，并跳转页面
+                                        window.location.href = "/score?thisLinks=2&userSortnum=[(${session.user.competitionOrder})]";
+                                    },
+                                    error: function (result) {
+
+                                    }
+                                });
                             } else {
                                 alert(result.msg);
                             }
@@ -205,9 +234,9 @@
                 //第二环节
                 if (data.message.thisLinks == "2") {
                     if (data.toUserId == "all" && data.message.title == "close_answer") {
-                        setTimeout(function(){
-                            window.location.href = "/score?thisLinks=2&userSortnum=" + data.message.userSortnum;
-                        },5000);
+
+                        window.location.href = "/score?thisLinks=2&userSortnum=" + data.message.userSortnum;
+
 
                     }
                 }

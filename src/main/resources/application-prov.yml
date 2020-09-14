@@ -3,7 +3,7 @@ server:
   servlet:
     context-path: /
     session:
-      timeout: 300m
+      timeout: 1000m
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver

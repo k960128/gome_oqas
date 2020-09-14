@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>国美-第五届美财之星总决赛</title>
+    <link href="../static/favicon.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="../static/css/layui.css"/>
+
+
+    <style>
+        html {
+            background: url(static/images/美财之星总决赛-主页面-终版.png);
+            background-size: 100%;
+            overflow-y: hidden;
+        }
+
+        body {
+
+
+        }
+
+
+    </style>
+</head>
+<body>
+<div>
+    <audio preload="auto" autoplay loop  id="audio_bgm_div" src="../static/bgm/结尾音乐.mp3" type="audio/mpeg"></audio>
+</div>
+
+<!--播放视频-->
+<div id="play_mv" style="display: none;">
+    <video id="play_mv_video" type="video/mp4">
+
+    </video>
+</div>
+
+</body>
+
+<script src="../static/layui.all.js"></script>
+<script src="../static/jquery-3.3.1.min.js"></script>
+<script>
+    ;!function () {
+        //连接到websocket
+        // var webSocketUrl = "ws://10.2.51.69:8088/websocket/publicscreen";
+        // var webSocketUrl = "ws://10.2.135.10:8088/websocket/publicscreen";
+        var webSocketUrl = "ws://10.2.51.69:8088/websocket/publicscreen";
+        var socket = new WebSocket(webSocketUrl);
+
+        //获得消息事件
+        socket.onmessage = function (msg) {
+            console.log(msg.data);
+            //解析json字符串
+            if (msg.data!="连接成功") {
+
+
+                var data = JSON.parse(msg.data);
+                console.log(data);
+                if (data.message.sortNum === 2) {
+                    console.log("播放开场音乐");
+                    $('#audio_bgm_div')[0].autoplay="autoplay";
+                    //获取音量
+                    var v = $('#audio_bgm_div')[0].volume;
+                    console.log("v:"+v)
+                    //设置音量为0
+                    v = 0;
+                    //开始播放
+                    $('#audio_bgm_div')[0].play();
+                    var t = setInterval(function(){
+                        v+=0.1;
+                        console.log("v:"+v)
+                        if(v<=1){
+                            $('#audio_bgm_div')[0].volume = v;
+                        }else{
+                            clearInterval(t);
+                        }
+                    },200);
+                } else if (data.message.sortNum === 3) {
+                    console.log("关闭背景音乐并播放视频")
+                    var v = $('#audio_bgm_div')[0].volume;
+                    var t = setInterval(function(){
+                        v-=0.1;
+                        console.log("v:"+v)
+                        if(v>0){
+                            $('#audio_bgm_div')[0].volume =v;
+                        }else{
+                            clearInterval(t);
+                            $('#audio_bgm_div')[0].pause();
+                        }
+                    },200);
+
+                    //开始播放视频
+                    $('#play_mv').show("slow");
+                    console.log(data.message.videoUrl);
+                    var play_mv_video = document.getElementById("play_mv_video");
+                    play_mv_video.src = data.message.videoUrl;
+                    play_mv_video.width = $(window).width();
+                    play_mv_video.height = $(window).height();
+
+                    //延迟两秒播放
+                    setTimeout(function () {
+                        play_mv_video.play();
+                    }, 2000);
+                    //延迟两秒关闭
+                    setTimeout(function () {
+                        play_mv_video.onended = function () {
+
+                            $('#play_mv').hide("slow");
+                        }
+                    }, 2000)
+
+                } else if (data.message.sortNum === 4) {
+                    console.log("方总讲话");
+                } else if (data.message.sortNum === 5) {
+                    console.log("宣读比赛流程");
+                    window.location.href = "/process/?this_Links=" + data.message.thisLinks;
+                }
+            }
+        };
+        //关闭事件
+        socket.onclose = function () {
+            console.log("websocket已关闭");
+
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+            console.log("websocket发生了错误");
+        }
+    }();
+</script>
+
+</html>

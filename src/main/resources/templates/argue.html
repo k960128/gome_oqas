@@ -70,7 +70,7 @@
         }
 
         .img-button td img {
-            height: 90%;
+            height: 95%;
             width: 80%;
             border-radius: 10px;
             transition: all 1s;
@@ -82,9 +82,6 @@
 
         }
 
-        .img-top td img:hover, .img-button td img:hover {
-            transform: scale(1.1);
-        }
 
         .layui-container {
             margin: 0 auto;
@@ -226,7 +223,7 @@
             </div>
             <div class="div_center_top_msg">
                 <span class="bian-top" id="bian1"></span>
-                <button style="display: none" class="layui-btn layui-btn-sm  layui-btn-warm">结束</button>
+                <button id="close_btn1" style="display: none" class="layui-btn layui-btn-sm  layui-btn-warm">开始</button>
                 <br>
                 <span class="jishi" id="timer1">倒计时:0分0秒</span>
             </div>
@@ -250,7 +247,7 @@
             </div>
             <div class="div_center_button_msg">
                 <span class="bian-button" id="bian2"></span>
-                <button style="display: none" class="layui-btn layui-btn-sm layui-btn-warm">结束</button>
+                <button id="close_btn2" style="display: none" class="layui-btn layui-btn-sm layui-btn-warm">开始</button>
                 <br>
                 <span class="jishi" id="timer2">倒计时:0分0秒</span>
             </div>
@@ -268,7 +265,17 @@
 
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
+    var play_state;
+    var this_user;
+    var state;
     var tid;
+
+    //用于计时器
+    var num1=120;
+    var num2=120;
+
+    var atimer;
+    var btimer;
     //连接到websocket
     var webSocketUrl = "ws://10.2.51.69:8088/websocket/[(${session.user.userName})]";
     // var webSocketUrl = "ws://10.2.135.10:8088/websocket/[(${session.user.userName})]";
@@ -294,77 +301,191 @@
                 // 解析JSON串
                 var data = JSON.parse(msg.data);
                 if(data.message.thisLinks=='4'){
-                    $('img').css("transform","scale(1)");
-                    $('#img_'+data.message.userSortnum).css("transform","scale(1.1)");
+                    if(data.message.remarks=="第一环节"||data.message.remarks=="第二环节"||data.message.remarks=="第四环节"||data.message.remarks==""){
+                        $('img').css("transform","scale(1)");
+                        $('#img_'+data.message.userSortnum).css("transform","scale(1.1)");
 
-                    //清空当前定时器
-                    clearInterval(tid);
+                        //清空当前定时器
+                        clearInterval(tid);
 
 
 
 
-                    if(data.message.isQuartz=='0'){
-                        $('#timer2').css("color","white");
-                        layui.$('#timer2').html('倒计时:0分0秒');
-                        $('#timer1').css("color","red");
-                        $('#bian2').html("");
-                        $('#bian1').html(data.message.currentLinksName);
-                        // 倒计时
-                        //1. js获取当bai前时间
-                        var date = new Date();
-                        var min = date.getMinutes();
-                        //3. 设置当前时间+5分钟：把zhi当前分钟数+5后的值重新设置为date对象的分钟数
-                        date.setMinutes(min + 2);
-                        // 设置开始时间和结束时间
-                        var endTime = date.getTime();
-                        var nowDate = new Date().getTime();
-                        // 1.开始时间是当前时间，结束时间是数据库的时间*2分钟
-                        util.countdown(endTime, nowDate, function (date, nowDate, timer) {
-                            tid = timer;
-                            // 1. 如果加的五分钟小于当前时间
-                            var str = date[2] + '分' + date[3] + '秒';
-                            layui.$('#timer1').html('倒计时:'+str);
-                            // 如果结束时间小于或等于当前时间 弹出框
-                            if (endTime <= nowDate) {
-                                clearInterval(tid);
-                                $('img').css("transform","scale(1)");
-                                $('#timer1').css("color","white");
-                            }
-                            console.log("tid"+tid);
-                        });
+                        if(data.message.isQuartz=='0'){
+                            $('#timer2').css("color","white");
+                            layui.$('#timer2').html('倒计时:0分0秒');
+                            $('#timer1').css("color","red");
+                            $('#bian2').html("");
+                            $('#bian1').html(data.message.currentLinksName);
+                            // 倒计时
+                            //1. js获取当bai前时间
+                            var date = new Date();
+                            var min = date.getMinutes();
+                            //3. 设置当前时间+5分钟：把zhi当前分钟数+5后的值重新设置为date对象的分钟数
+                            date.setMinutes(min + 2);
+                            // 设置开始时间和结束时间
+                            var endTime = date.getTime();
+                            var nowDate = new Date().getTime();
+                            // 1.开始时间是当前时间，结束时间是数据库的时间*2分钟
+                            util.countdown(endTime, nowDate, function (date, nowDate, timer) {
+                                tid = timer;
+                                // 1. 如果加的五分钟小于当前时间
+                                var str = date[2] + '分' + date[3] + '秒';
+                                layui.$('#timer1').html('倒计时:'+str);
+                                // 如果结束时间小于或等于当前时间 弹出框
+                                if (endTime <= nowDate) {
+                                    clearInterval(tid);
+                                    $('img').css("transform","scale(1)");
+                                    $('#timer1').css("color","white");
+                                }
+                                console.log("tid"+tid);
+                            });
+                        }
+
+
+                        if(data.message.isQuartz=='1'){
+                            $('#timer1').css("color","white");
+                            layui.$('#timer1').html('倒计时:0分0秒');
+                            $('#timer2').css("color","blue");
+                            $('#bian1').html("");
+                            $('#bian2').html(data.message.currentLinksName);
+                            // 倒计时
+                            //1. js获取当bai前时间
+                            var date = new Date();
+                            var min = date.getMinutes();
+                            //3. 设置当前时间+5分钟：把zhi当前分钟数+5后的值重新设置为date对象的分钟数
+                            date.setMinutes(min + 2);
+                            // 设置开始时间和结束时间
+                            var endTime = date.getTime();
+                            var nowDate = new Date().getTime();
+                            // 1.开始时间是当前时间，结束时间是数据库的时间*2分钟
+                            util.countdown(endTime, nowDate, function (date, nowDate, timer) {
+                                tid = timer;
+                                // 1. 如果加的五分钟小于当前时间
+                                var str = date[2] + '分' + date[3] + '秒';
+                                layui.$('#timer2').html('倒计时:'+str);
+                                // 如果结束时间小于或等于当前时间 弹出框
+                                if (endTime <= nowDate) {
+                                    clearInterval(tid);
+                                    $('img').css("transform","scale(1)");
+                                    $('#timer2').css("color","white");
+                                }
+                                console.log("tid"+tid);
+                            });
+                        }
                     }
 
 
-                    if(data.message.isQuartz=='1'){
+
+                    /**
+                     * 开启一对一环节,接受后台报文
+                     **/
+                    if(data.message.remarks=="第三环节"||data.message.remarks=="第三环节-开启"){
+                        play_state = '第三环节';
+                        if(data.message.remarks=="第三环节-开启"){
+                            clearInterval(tid);
+                            clearInterval(atimer);
+                            clearInterval(btimer);
+                            $('#timer1').css("color","white");
+                            $('#timer2').css("color","white");
+                            $('#bian2').html("");
+                            $('#bian1').html("");
+                            $('#timer1').html('倒计时:120秒');
+                            $('#timer2').html('倒计时:120秒');
+
+                        }
+
+                        $('#timer1').html('倒计时:120秒');
+                        $('#timer2').html('倒计时:120秒');
+                        clearInterval(atimer);
+                        clearInterval(btimer);
+                        $('img').css("transform","scale(1.0)");
+                        $('#img_'+data.message.userSortnum).css("transform","scale(1.1)");
+                        $("#close_btn1").hide("1000");
+                        $("#close_btn2").hide("1000");
+                        //开始选择对方辩手
+                        if("[(${session.user.competitionOrder})]"==data.message.userSortnum){
+                            num1=120;
+                            num2=120;
+
+                            this_user = '[(${session.user.competitionOrder})]';
+                            state = data.message.isQuartz;
+                            //当前选手
+
+                            //开启按钮
+                            if(data.message.isQuartz=="0"){
+                                $('#close_btn1').html("开始");
+                                $("#close_btn1").show("1000");
+                            }else{
+                                $('#close_btn2').html("开始");
+                                $("#close_btn2").show("1000");
+                            }
+
+
+                        }
+                    }
+
+                    /**
+                     * 接受辩手的报文
+                     **/
+
+                    if(data.message.remarks=="第三环节-辩手"&&data.message.title=="to_id"){
                         $('#timer1').css("color","white");
-                        layui.$('#timer1').html('倒计时:0分0秒');
-                        $('#timer2').css("color","blue");
-                        $('#bian1').html("");
-                        $('#bian2').html(data.message.currentLinksName);
-                        // 倒计时
-                        //1. js获取当bai前时间
-                        var date = new Date();
-                        var min = date.getMinutes();
-                        //3. 设置当前时间+5分钟：把zhi当前分钟数+5后的值重新设置为date对象的分钟数
-                        date.setMinutes(min + 2);
-                        // 设置开始时间和结束时间
-                        var endTime = date.getTime();
-                        var nowDate = new Date().getTime();
-                        // 1.开始时间是当前时间，结束时间是数据库的时间*2分钟
-                        util.countdown(endTime, nowDate, function (date, nowDate, timer) {
-                            tid = timer;
-                            // 1. 如果加的五分钟小于当前时间
-                            var str = date[2] + '分' + date[3] + '秒';
-                            layui.$('#timer2').html('倒计时:'+str);
-                            // 如果结束时间小于或等于当前时间 弹出框
-                            if (endTime <= nowDate) {
-                                clearInterval(tid);
-                                $('img').css("transform","scale(1)");
-                                $('#timer2').css("color","white");
+                        $('#timer2').css("color","white");
+
+                        $('#close_btn1').html("开始");
+                        $('#close_btn2').html("开始");
+                        $('#timer1').html('倒计时:120秒');
+                        $('#timer2').html('倒计时:120秒');
+                        num1=120;
+                        num2=120;
+                        if(data.message.isQuartz=="0"){
+                            $('#img_'+data.message.userSortnum).css("transform","scale(1.1)");
+                            if("[(${session.user.competitionOrder})]"==data.message.userSortnum){
+                                $('#close_btn2').show('1000');
+
+                            }else{
+                                $('#close_btn2').hide('1000');
                             }
-                            console.log("tid"+tid);
-                        });
+
+                        }else{
+                            $('#img_'+data.message.userSortnum).css("transform","scale(1.1)");
+                            if("[(${session.user.competitionOrder})]"==data.message.userSortnum){
+                                $('#close_btn1').show('1000');
+                            }else{
+                                $('#close_btn1').hide('1000');
+                            }
+
+                        }
+
                     }
+                    if(data.message.remarks=="第三环节-计时"&&data.message.title=="btn_timer"){
+                        if(data.message.isQuartz=="0"){
+                            if(data.message.state=="开始"){
+                                atimer = setInterval(lessNum1, 1000);
+
+                            }else{
+                                clearInterval(atimer);
+                            }
+                        }else{
+                            if(data.message.state=="开始"){
+                                btimer = setInterval(lessNum2, 1000);
+                            }else{
+                                clearInterval(btimer);
+                            }
+                        }
+
+                    }
+
+                    /**
+                     *
+                     *
+                     * 跳转至得分界面
+                     */
+                    if(data.message.userSortnum==87&&data.message.title=="close_argue"){
+                        window.location.href = "/score?thisLinks=4&userSortnum=87";
+                    }
+
                 }
             }
 
@@ -379,8 +500,96 @@
             console.log("websocket发生了错误");
         }
 
+
+
+        $('#close_btn1').click(function(){
+            if($('#close_btn1').html()=="开始"){
+
+                $('#close_btn1').html("结束");
+                socket.send('{"toUserId":"all","message":{"isQuartz":"0","remarks":"第三环节-计时","title":"btn_timer","thisLinks":"4","userSortnum":"","state":"开始"}}');
+
+                //发送报文
+            }else{
+                $('#close_btn1').html("开始");
+                socket.send('{"toUserId":"all","message":{"isQuartz":"0","remarks":"第三环节-计时","title":"btn_timer","thisLinks":"4","userSortnum":"","state":"结束"}}');
+                //发送报文
+            }
+        });
+
+
+
+        $('#close_btn2').click(function(){
+            if($('#close_btn2').html()=="开始"){
+                $('#close_btn2').html("结束");
+                socket.send('{"toUserId":"all","message":{"isQuartz":"1","remarks":"第三环节-计时","title":"btn_timer","thisLinks":"4","userSortnum":"","state":"开始"}}');
+                //发送报文
+            }else{
+                $('#close_btn2').html("开始");
+                socket.send('{"toUserId":"all","message":{"isQuartz":"1","remarks":"第三环节-计时","title":"btn_timer","thisLinks":"4","userSortnum":"","state":"结束"}}');
+                //发送报文
+            }
+        });
+
+
+
+
+
+
+
     }();
 
+    $('.img-top').find('img').each(function(index){
+        $(this).click(function(){
+            if(play_state=="第三环节"){
+                //表示为当前选手
+                if(this_user=='[(${session.user.competitionOrder})]'){
+                    if(state=="0"){
+                        alert("请选择对方辩手");
+                    }else{
+                        var to_id=$(this)[0].id.replace(/[^0-9]/ig,"");
+                        socket.send('{"toUserId":"all","message":{"isQuartz":"1","remarks":"第三环节-辩手","title":"to_id","thisLinks":"4","userSortnum":"'+to_id+'"}}');
+                    }
+                }else{
+                    alert("暂不能选择");
+                }
+            }
+        });
+    });
+
+    $('.img-button').find('img').each(function(index){
+        $(this).click(function(){
+            if(play_state=="第三环节"){
+                //表示为当前选手
+                if(this_user=='[(${session.user.competitionOrder})]'){
+                    if(state=="1"){
+                        alert("请选择对方辩手");
+                    }else{
+                        var to_id=$(this)[0].id.replace(/[^0-9]/ig,"");
+                        socket.send('{"toUserId":"all","message":{"isQuartz":"0","remarks":"第三环节-辩手","title":"to_id","thisLinks":"4","userSortnum":"'+to_id+'"}}');
+                    }
+                }else{
+                    alert("暂不能选择");
+                }
+            }
+        });
+    });
+    
+    function lessNum1(){
+        num1--;
+        if(num1==0){
+            $('#close_btn1').hide(this);
+            clearInterval(atimer);
+        }
+        $('#timer1').html('倒计时：'+num1+'秒');
+    }
+    function  lessNum2() {
+        num2--;
+        if(num2==0){
+            $('#close_btn2').hide(this);
+            clearInterval(btimer);
+        }
+        $('#timer2').html('倒计时：'+num2+'秒');
+    }
 
 </script>
 

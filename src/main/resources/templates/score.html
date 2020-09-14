@@ -68,16 +68,7 @@
             color:#FF9900;
             font-weight: bold;
         }
-        table tr:nth-child(2){
-            color: darkred;
-            height: 70px;
-        }
-        table tr:nth-child(3){
-            color: #FF9900;
-        }
-        table tr:nth-child(4){
-            color: #FEF637;
-        }
+
         table tr{
             font-weight: bold;
             font-size:35px;
@@ -87,18 +78,19 @@
 
 </head>
 <body>
-<div class="title_content" id="title_content">
+<div th:if="${thisLinks != '4'}" class="title_content" id="title_content">
     <span th:if="${thisLinks eq '2'}" th:text="第一环节和第二环节得分"></span>
     <span th:if="${thisLinks eq '3'}" th:text="第三环节-场景再现得分"></span>
     <span th:if="${thisLinks eq '4'}" th:text="第四环节-群英舌战得分"></span>
-    <span th:text="${user.userPersonsName}"></span>
+    <span th:if="${thisLinks eq '5'}" th:text="第五环节-直抒胸臆得分"></span>
+    <span th:if="${thisLinks!='4'}" th:text="${user.userPersonsName}"></span>
 </div>
 <div class="sort_content">
     <table style="text-align: center;">
 
     </table>
 </div>
-<div class="js-box box" id="js_box"></div>
+<div th:if="${thisLinks!='4'}" class="js-box box" id="js_box"></div>
 
 
 <div id="show_Sort" style="margin:0 auto;text-align:center;margin-top:5%;display: none">
@@ -162,6 +154,13 @@
                 if (data.message.userSortnum !== -1 && data.message.thisLinks === 5) {
                     // 跳转 第五环节选题卡页面
                     window.location.href = "/topic?userSortnum=" + data.message.userSortnum + "&thisLinks=" + data.message.thisLinks;
+                }
+                if (data.message.userSortnum !== -1 && data.message.thisLinks === '6') {
+                    // 跳转 最终环节
+                    if(data.message.title="close_finalScore"){
+                        window.location.href = "/end";
+                    }
+
                 }
 
             }
@@ -229,7 +228,12 @@
         Event.animation();
 
 
-        setTimeout(show_Sort,5000);
+
+        if("[(${thisLinks})]"=="4"){
+            setTimeout(show_Sort,1000);
+        }else{
+            setTimeout(show_Sort,5000);
+        }
     }
 
     function show_Sort(){

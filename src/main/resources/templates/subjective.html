@@ -162,32 +162,64 @@
                         if(data.message.thisLinks=="3"){
                             //如果是当前答题人
                             if("[(${session.user.competitionOrder})]" == "[(${gomeUser.competitionOrder})]"){
-                                setTimeout(function(){
-                                    window.location.href = "/score?thisLinks=3&userSortnum=[(${gomeUser.competitionOrder})]";
-                                },3000);
-                            }else{
-                                setTimeout(function(){
-                                    window.location.href = "/score?thisLinks=3&userSortnum=[(${gomeUser.competitionOrder})]";
-                                },5000);
+                               //1、如果是当前答题人，先进入收集分数功能，
+                                $.ajax({
+                                    url:"/currentCountScore",
+                                    type:"GET",
+                                    data:{"userSortnum":"[(${session.user.competitionOrder})]","thisLinks":"3"},
+                                    dataType:"json",
+                                    success:function(result){
+                                        console.log("计算成功！");
+                                        socket.send('{"toUserId":"all","message":{"title":"close_subjective","thisLinks":"3","userSortnum":"[(${gomeUser.competitionOrder})]"}}');
+                                        //表示已经处理完数据，发送报文，并跳转页面
+                                        window.location.href = "/score?thisLinks=3&userSortnum=[(${gomeUser.competitionOrder})]";
+                                    },
+                                    error:function(result){
+
+                                    }
+                                });
                             }
 
                         }
+
+
                         if(data.message.thisLinks=="5"){
+                            //如果是当前答题人
                             if("[(${session.user.competitionOrder})]" == "[(${gomeUser.competitionOrder})]"){
-                                setTimeout(function(){
-                                    window.location.href = "/score?thisLinks=5&userSortnum=[(${gomeUser.competitionOrder})]";
-                                },3000);
-                            }else{
-                                setTimeout(function(){
-                                    window.location.href = "/score?thisLinks=5&userSortnum=[(${gomeUser.competitionOrder})]";
-                                },5000);
+                                //1、如果是当前答题人，先进入收集分数功能，
+                                $.ajax({
+                                    url:"/currentCountScore",
+                                    type:"GET",
+                                    data:{"userSortnum":"[(${session.user.competitionOrder})]","thisLinks":"5"},
+                                    dataType:"json",
+                                    success:function(result){
+                                        console.log("计算成功！");
+                                        socket.send('{"toUserId":"all","message":{"title":"close_subjective","thisLinks":"5","userSortnum":"[(${gomeUser.competitionOrder})]"}}');
+                                        //表示已经处理完数据，发送报文，并跳转页面
+                                        window.location.href = "/score?thisLinks=5&userSortnum=[(${gomeUser.competitionOrder})]";
+                                    },
+                                    error:function(result){
+
+                                    }
+                                });
                             }
 
                         }
+
+
+
 
 
 
                     }
+
+                    if(data.message.thisLinks=="3"&&data.message.title=="close_subjective"){
+                        window.location.href = "/score?thisLinks=3&userSortnum=[(${gomeUser.competitionOrder})]";
+                    }
+                    if(data.message.thisLinks=="5"&&data.message.title=="close_subjective"){
+                        window.location.href = "/score?thisLinks=5&userSortnum=[(${gomeUser.competitionOrder})]";
+                    }
+
 
                 }
 
@@ -210,7 +242,7 @@
     //向后台发送一个报文，表示已经结束
     function close_msg() {
 
-        socket.send('{"toUserId":"all","message":{"thisLinks":"[(${thisLinks})]","userSortnum":"[(${gomeUser.competitionOrder})]"}}');
+        socket.send('{"toUserId":"all","message":{"title":"close_msg","thisLinks":"[(${thisLinks})]","userSortnum":"[(${gomeUser.competitionOrder})]"}}');
 
     }
 
